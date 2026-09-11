@@ -12,7 +12,7 @@ export interface UserWithProfileResponse {
   email: string | null
   fistName: string | null
   lastName: string | null
-  dateOfBirth: string
+  dateOfBirth: string | null
   address: string | null
   profilePictureUrl: string | null
   profilePicturePublicId: string | null

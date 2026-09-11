@@ -41,6 +41,10 @@ export function ShopMyOrdersPage() {
 
   async function handleCancelConfirm() {
     if (!cancelTarget) return
+    if (cancelTarget.status !== OrderStatus.Pending) {
+      setCancelTarget(null)
+      return
+    }
     setCancelError(null)
     setCancelling(true)
     try {

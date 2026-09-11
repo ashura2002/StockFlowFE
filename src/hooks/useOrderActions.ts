@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { mockOrdersService } from '../services/orders.mock'
+import { ordersService } from '../services/orders.service'
 
 export type OrderAction = 'confirm' | 'cancel' | 'complete'
 
@@ -12,9 +12,9 @@ export function useOrderActions(onSuccess: () => void) {
       setAction(next)
       setError(null)
       try {
-        if (next === 'confirm') await mockOrdersService.confirm(orderId)
-        else if (next === 'cancel') await mockOrdersService.cancel(orderId)
-        else await mockOrdersService.complete(orderId)
+        if (next === 'confirm') await ordersService.confirm(orderId)
+        else if (next === 'cancel') await ordersService.cancel(orderId)
+        else await ordersService.complete(orderId)
         onSuccess()
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Action failed')

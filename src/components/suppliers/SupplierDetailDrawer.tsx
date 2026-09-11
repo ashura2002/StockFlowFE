@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { SupplierWithProducts } from '../../types/suppliers'
-import { mockSuppliersService } from '../../services/suppliers.mock'
+import { suppliersService } from '../../services/suppliers.service'
 import { formatCurrency } from '../../utils/format'
 import { Modal } from '../shared/Modal'
 import { BoxIcon, MailIcon, MapPinIcon, PhoneIcon, TruckIcon } from '../ui/icons'
@@ -30,7 +30,7 @@ function DrawerBody({ supplierId }: { supplierId: string }) {
 
   useEffect(() => {
     let cancelled = false
-    mockSuppliersService
+    suppliersService
       .getById(supplierId)
       .then((s) => {
         if (!cancelled) setSupplier(s)

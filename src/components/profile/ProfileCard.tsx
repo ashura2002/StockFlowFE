@@ -87,7 +87,7 @@ export function ProfileCard({
         <div className="flex items-center justify-between px-4 py-3">
           <dt className="text-sm text-gray-500">Date of birth</dt>
           <dd className="text-sm font-medium text-gray-900">
-            {formatDate(profile.dateOfBirth)}
+            {profile.dateOfBirth ? formatDate(profile.dateOfBirth) : '—'}
           </dd>
         </div>
         <div className="flex items-center justify-between px-4 py-3">

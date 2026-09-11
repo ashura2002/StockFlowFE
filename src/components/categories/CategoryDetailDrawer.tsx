@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { CategoryWithProducts } from '../../types/categories'
-import { mockCategoriesService } from '../../services/categories.mock'
+import { categoriesService } from '../../services/categories.service'
 import { formatCurrency } from '../../utils/format'
 import { Modal } from '../shared/Modal'
 import { BoxIcon, TagIcon } from '../ui/icons'
@@ -30,7 +30,7 @@ function DrawerBody({ categoryId }: { categoryId: string }) {
 
   useEffect(() => {
     let cancelled = false
-    mockCategoriesService
+    categoriesService
       .getById(categoryId)
       .then((c) => {
         if (!cancelled) setCategory(c)

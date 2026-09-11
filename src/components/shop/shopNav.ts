@@ -3,6 +3,7 @@ import {
   BellIcon,
   BoxesIcon,
   ClipboardIcon,
+  SettingsIcon,
   ShoppingCartIcon,
   UserCircleIcon,
 } from '../ui/icons'
@@ -18,6 +19,14 @@ export function shopNavItems(cartCount = 0): NavItem[] {
       badge: cartCount,
     },
     { to: '/shop/notifications', label: 'Notifications', icon: BellIcon },
-    { to: '/shop/profile', label: 'Profile', icon: UserCircleIcon },
+    {
+      to: '/shop/settings/profile',
+      label: 'Settings',
+      icon: SettingsIcon,
+      children: [
+        { to: '/shop/settings/profile', label: 'Profile', icon: UserCircleIcon },
+        { to: '/shop/settings/account', label: 'Account', icon: SettingsIcon },
+      ],
+    },
   ]
 }

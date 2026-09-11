@@ -24,6 +24,6 @@ export const catalogService = {
     const { data } = await api.get<ProductResponse[]>('/Products/search', {
       params: { ProductName, ...(params ?? {}) },
     })
-    return data
+    return Array.isArray(data) ? data : data ? [data] : []
   },
 }

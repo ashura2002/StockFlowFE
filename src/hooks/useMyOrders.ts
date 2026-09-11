@@ -5,7 +5,8 @@ import type {
   OrderStatus,
   UpdateOrderItemRequest,
 } from '../types/orders'
-import { mockMyOrdersService, myOrderCounts } from '../services/myOrders.mock'
+import { myOrdersService } from '../services/myOrders.service'
+import { orderCounts } from '../utils/orderCounts'
 
 export type MyOrdersTab = 'all' | OrderStatus
 
@@ -21,7 +22,7 @@ export function useMyOrders() {
   const refresh = useCallback(async () => {
     setError(null)
     try {
-      const data = await mockMyOrdersService.list()
+      const data = await myOrdersService.list()
       setOrders(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load orders')
@@ -35,7 +36,7 @@ export function useMyOrders() {
     void refresh()
   }, [refresh])
 
-  const counts = myOrderCounts(orders)
+  const counts = orderCounts(orders)
   const tabFiltered =
     tab === 'all' ? orders : orders.filter((o) => o.status === tab)
 
@@ -53,19 +54,19 @@ export function useMyOrders() {
 
   const createOrder = useCallback(
     async (items: CreateOrderItem[]): Promise<string> =>
-      mockMyOrdersService.create(items),
+      myOrdersService.create({ orderItems: items }),
     [],
   )
 
   const getDetails = useCallback(
     async (orderId: string): Promise<CustomerOrderResponse> =>
-      mockMyOrdersService.getDetails(orderId),
+      myOrdersService.getDetails(orderId),
     [],
   )
 
   const cancelOrder = useCallback(
     async (orderId: string): Promise<void> => {
-      await mockMyOrdersService.cancel(orderId)
+      await myOrdersService.cancel(orderId)
       await refresh()
     },
     [refresh],
@@ -73,7 +74,7 @@ export function useMyOrders() {
 
   const updateItems = useCallback(
     async (orderId: string, data: UpdateOrderItemRequest): Promise<void> => {
-      await mockMyOrdersService.updateItems(orderId, data.orderItems)
+      await myOrdersService.updateItems(orderId, data)
       await refresh()
     },
     [refresh],

@@ -46,8 +46,18 @@ export function ShopProductDetailPage() {
         </div>
       ) : (
         <div className="grid gap-8 sm:grid-cols-2">
-          <div className="flex h-72 items-center justify-center rounded-xl bg-gray-100 text-7xl font-bold text-gray-300">
-            {product.productName?.charAt(0).toUpperCase() ?? 'P'}
+          <div className="flex h-72 items-center justify-center overflow-hidden rounded-xl bg-gray-100">
+            {product.productImageUrl ? (
+              <img
+                src={product.productImageUrl}
+                alt={product.productName ?? 'Product'}
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <span className="text-7xl font-bold text-gray-300">
+                {product.productName?.charAt(0).toUpperCase() ?? 'P'}
+              </span>
+            )}
           </div>
 
           <div className="flex flex-col">

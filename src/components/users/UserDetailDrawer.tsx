@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { UserResponse } from '../../types/users'
-import { mockUsersService } from '../../services/users.mock'
+import { usersService } from '../../services/users.service'
 import { formatDate } from '../../utils/format'
 import { Modal } from '../shared/Modal'
 import { RoleBadge } from '../ui/RoleBadge'
@@ -35,7 +35,7 @@ function DrawerBody({ userId }: DrawerBodyProps) {
 
   useEffect(() => {
     let cancelled = false
-    mockUsersService
+    usersService
       .getById(userId)
       .then((u) => {
         if (!cancelled) setUser(u)

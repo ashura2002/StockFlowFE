@@ -1,12 +1,13 @@
 import api from './api'
-import type { AdminOrderResponse, OrderStatus } from '../types/orders'
+import type { AdminOrderResponse } from '../types/orders'
+import { OrderStatus } from '../types/orders'
 import type { PaginationParams } from '../types/pagination'
 
 const STATUS_PATHS: Record<OrderStatus, string> = {
-  [1]: 'pending-orders',
-  [2]: 'confirmed-orders',
-  [3]: 'completed-orders',
-  [4]: 'cancelled-orders',
+  [OrderStatus.Pending]: 'pending-orders',
+  [OrderStatus.Confirmed]: 'confirmed-orders',
+  [OrderStatus.Cancelled]: 'cancelled-orders',
+  [OrderStatus.Completed]: 'completed-orders',
 }
 
 export const ordersService = {
@@ -27,10 +28,10 @@ export const ordersService = {
   },
 
   async getAll(params?: PaginationParams): Promise<AdminOrderResponse[]> {
-    const pending = await this.getByStatus(1, params)
-    const confirmed = await this.getByStatus(2, params)
-    const completed = await this.getByStatus(3, params)
-    const cancelled = await this.getByStatus(4, params)
+    const pending = await this.getByStatus(OrderStatus.Pending, params)
+    const confirmed = await this.getByStatus(OrderStatus.Confirmed, params)
+    const completed = await this.getByStatus(OrderStatus.Completed, params)
+    const cancelled = await this.getByStatus(OrderStatus.Cancelled, params)
     return [...pending, ...confirmed, ...completed, ...cancelled]
   },
 

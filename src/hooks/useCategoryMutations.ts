@@ -1,18 +1,22 @@
 import { useCallback, useState } from 'react'
-import type { CreateCategoryRequest } from '../types/categories'
-import { mockCategoriesService } from '../services/categories.mock'
+import type {
+  CreateCategoryRequest,
+  UpdateCategoryRequest,
+} from '../types/categories'
+import { categoriesService } from '../services/categories.service'
 
 export function useCategoryMutations(onSuccess: () => void) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const create = useCallback(
-    async (data: CreateCategoryRequest) => {
+    async (data: CreateCategoryRequest): Promise<string> => {
       setSaving(true)
       setError(null)
       try {
-        await mockCategoriesService.create(data)
+        const id = await categoriesService.create(data)
         onSuccess()
+        return id
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to create category')
         throw err
@@ -24,11 +28,11 @@ export function useCategoryMutations(onSuccess: () => void) {
   )
 
   const update = useCallback(
-    async (categoryId: string, data: CreateCategoryRequest) => {
+    async (categoryId: string, data: UpdateCategoryRequest) => {
       setSaving(true)
       setError(null)
       try {
-        await mockCategoriesService.update(categoryId, data)
+        await categoriesService.update(categoryId, data)
         onSuccess()
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to update category')
@@ -45,7 +49,7 @@ export function useCategoryMutations(onSuccess: () => void) {
       setSaving(true)
       setError(null)
       try {
-        await mockCategoriesService.delete(categoryId)
+        await categoriesService.delete(categoryId)
         onSuccess()
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to delete category')

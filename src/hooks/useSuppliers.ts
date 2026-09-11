@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { SupplierResponse } from '../types/suppliers'
-import { mockSuppliersService } from '../services/suppliers.mock'
+import { suppliersService } from '../services/suppliers.service'
 
 const PAGE_SIZE = 5
 
@@ -14,7 +14,7 @@ export function useSuppliers() {
   const refresh = useCallback(async () => {
     setError(null)
     try {
-      const data = await mockSuppliersService.getAll()
+      const data = await suppliersService.getAll()
       setSuppliers(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load suppliers')

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { CategoryResponse } from '../types/categories'
-import { mockCategoriesService } from '../services/categories.mock'
+import { categoriesService } from '../services/categories.service'
 
 export function useCategories() {
   const [categories, setCategories] = useState<CategoryResponse[]>([])
@@ -10,7 +10,7 @@ export function useCategories() {
   const refresh = useCallback(async () => {
     setError(null)
     try {
-      const data = await mockCategoriesService.getAll()
+      const data = await categoriesService.getAll()
       setCategories(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load categories')

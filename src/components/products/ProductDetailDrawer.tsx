@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import type { MockProductRow } from '../../services/products.mock'
-import { mockProductsService } from '../../services/products.mock'
+import type { ProductResponse } from '../../types/products'
+import { productsService } from '../../services/products.service'
 import { formatCurrency } from '../../utils/format'
 import { Modal } from '../shared/Modal'
 import { Badge } from '../ui/Badge'
@@ -28,12 +28,12 @@ export function ProductDetailDrawer({
 }
 
 function DrawerBody({ productId }: { productId: string }) {
-  const [product, setProduct] = useState<MockProductRow | null>(null)
+  const [product, setProduct] = useState<ProductResponse | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
-    mockProductsService
+    productsService
       .getById(productId)
       .then((p) => {
         if (!cancelled) setProduct(p)

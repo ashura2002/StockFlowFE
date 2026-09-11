@@ -4,6 +4,7 @@ import type {
   ProductResponse,
   UpdateProductRequest,
 } from '../types/products'
+import type { UploadedImage } from '../types/profiles'
 
 export const productsService = {
   async getAll(): Promise<ProductResponse[]> {
@@ -39,5 +40,19 @@ export const productsService = {
 
   async delete(productId: string): Promise<void> {
     await api.delete(`/Products/${productId}`)
+  },
+
+  async uploadImage(
+    productId: string,
+    file: File,
+  ): Promise<UploadedImage> {
+    const formData = new FormData()
+    formData.append('file', file)
+    const { data } = await api.patch<UploadedImage>(
+      `/Products/${productId}/product-image`,
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    )
+    return data
   },
 }
