@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { UserResponse } from '../types/users'
-import { mockUsersService } from '../services/users.mock'
+import { usersService } from '../services/users.service'
 
 export type UserTab = 'active' | 'deleted'
 
@@ -19,8 +19,8 @@ export function useUsers() {
     setError(null)
     try {
       const [activeData, deletedData] = await Promise.all([
-        mockUsersService.getActive(),
-        mockUsersService.getDeleted(),
+        usersService.getActive(),
+        usersService.getDeleted(),
       ])
       setActive(activeData)
       setDeleted(deletedData)

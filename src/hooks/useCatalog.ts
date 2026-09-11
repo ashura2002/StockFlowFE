@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ProductResponse } from '../types/products'
-import { mockCatalogService } from '../services/catalog.mock'
+import { catalogService } from '../services/catalog.service'
 
 const PAGE_SIZE = 8
 const SEARCH_DEBOUNCE_MS = 350
@@ -17,8 +17,8 @@ export function useCatalog() {
     setError(null)
     try {
       const data = search.trim()
-        ? await mockCatalogService.search(search.trim())
-        : await mockCatalogService.list()
+        ? await catalogService.search(search.trim())
+        : await catalogService.list()
       setProducts(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load products')

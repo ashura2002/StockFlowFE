@@ -4,6 +4,7 @@ import {
   BoxesIcon,
   ClipboardIcon,
   DashboardIcon,
+  SettingsIcon,
   TagIcon,
   TruckIcon,
   UserCircleIcon,
@@ -16,6 +17,7 @@ export interface NavItem {
   icon: ComponentType<{ className?: string }>
   end?: boolean
   badge?: number
+  children?: NavItem[]
 }
 
 export const navItems: NavItem[] = [
@@ -26,5 +28,13 @@ export const navItems: NavItem[] = [
   { to: '/admin/orders', label: 'Orders', icon: ClipboardIcon },
   { to: '/admin/users', label: 'Users', icon: UsersIcon },
   { to: '/admin/notifications', label: 'Notifications', icon: BellIcon },
-  { to: '/admin/profile', label: 'Profile', icon: UserCircleIcon },
+  {
+    to: '/admin/settings/profile',
+    label: 'Settings',
+    icon: SettingsIcon,
+    children: [
+      { to: '/admin/settings/profile', label: 'Profile', icon: UserCircleIcon },
+      { to: '/admin/settings/account', label: 'Account', icon: SettingsIcon },
+    ],
+  },
 ]

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import type { CustomerOrderResponse } from '../../types/orders'
 import { OrderStatus } from '../../types/orders'
-import { mockMyOrdersService } from '../../services/myOrders.mock'
+import { myOrdersService } from '../../services/myOrders.service'
 import { Button } from '../../components/ui/Button'
 import { Card } from '../../components/ui/Card'
 import { StatusBadge } from '../../components/ui/StatusBadge'
@@ -22,7 +22,7 @@ export function ShopOrderDetailPage() {
     setError(null)
     setLoading(true)
     try {
-      const data = await mockMyOrdersService.getDetails(orderId)
+      const data = await myOrdersService.getDetails(orderId)
       setOrder(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load order')
@@ -37,11 +37,11 @@ export function ShopOrderDetailPage() {
   }, [refresh])
 
   async function handleCancelConfirm() {
-    if (!order) return
+    if (!order || order.status !== OrderStatus.Pending) return
     setCancelError(null)
     setCancelling(true)
     try {
-      await mockMyOrdersService.cancel(order.orderId)
+      await myOrdersService.cancel(order.orderId)
       setConfirmOpen(false)
       await refresh()
     } catch (err) {

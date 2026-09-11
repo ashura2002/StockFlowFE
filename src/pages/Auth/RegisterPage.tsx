@@ -8,25 +8,6 @@ import { PasswordInput } from '../../components/ui/PasswordInput'
 import { homePathForRole } from '../../utils/navigation'
 import type { ApiError } from '../../types/api'
 
-function UserPlusIcon() {
-  return (
-    <svg
-      className="h-7 w-7 text-white"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2 5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-      />
-    </svg>
-  )
-}
-
 interface ValidationErrors {
   email?: string
   password?: string
@@ -111,7 +92,11 @@ export function RegisterPage() {
       <div className="w-full max-w-sm sm:max-w-md">
         <div className="mb-6 text-center sm:mb-8">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600">
-            <UserPlusIcon />
+            <img
+              src="/Stockflow.png"
+              alt="StockFlow logo"
+              className="h-8 w-8 rounded object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
             StockFlow

@@ -3,13 +3,17 @@ import { PageContainer } from '../../components/layout/PageContainer'
 import { Card } from '../../components/ui/Card'
 import { useProfile } from '../../hooks/useProfile'
 import { useAuth } from '../../context/AuthContext'
-import type { UpdateProfileRequest } from '../../types/profiles'
+import type {
+  CreateProfileRequest,
+  UpdateProfileRequest,
+} from '../../types/profiles'
 import { ProfileCard } from '../../components/profile/ProfileCard'
 import { ProfileForm } from '../../components/profile/ProfileForm'
-import { ChangePasswordForm } from '../../components/profile/ChangePasswordForm'
+import { ProfileCreateForm } from '../../components/profile/ProfileCreateForm'
 
 export function ProfilePage() {
-  const { profile, loading, error, update, uploadPicture } = useProfile()
+  const { profile, hasProfile, loading, error, create, update, uploadPicture } =
+    useProfile()
   const { user, updateUser } = useAuth()
 
   const [saving, setSaving] = useState(false)
@@ -17,18 +21,36 @@ export function ProfilePage() {
   const [saveError, setSaveError] = useState<string | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
 
-  async function handleSave(data: UpdateProfileRequest) {
+  async function syncUserName(data: CreateProfileRequest | UpdateProfileRequest) {
+    if (!user) return
+    const name =
+      [data.firstName, data.lastName].filter(Boolean).join(' ') ||
+      user.email ||
+      user.name
+    updateUser({ ...user, name })
+  }
+
+  async function handleCreate(data: CreateProfileRequest) {
+    setSaveError(null)
+    setSaving(true)
+    try {
+      await create(data)
+      await syncUserName(data)
+    } catch (err) {
+      setSaveError(
+        err instanceof Error ? err.message : 'Failed to create profile',
+      )
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleUpdate(data: UpdateProfileRequest) {
     setSaveError(null)
     setSaving(true)
     try {
       await update(data)
-      if (user) {
-        const name =
-          [data.firstName, data.lastName].filter(Boolean).join(' ') ||
-          user.email ||
-          user.name
-        updateUser({ ...user, name })
-      }
+      await syncUserName(data)
     } catch (err) {
       setSaveError(
         err instanceof Error ? err.message : 'Failed to update profile',
@@ -42,7 +64,10 @@ export function ProfilePage() {
     setUploadError(null)
     setUploading(true)
     try {
-      await uploadPicture(file)
+      const uploaded = await uploadPicture(file)
+      if (user) {
+        updateUser({ ...user, profilePictureUrl: uploaded.url ?? null })
+      }
     } catch (err) {
       setUploadError(
         err instanceof Error ? err.message : 'Failed to upload profile picture',
@@ -85,6 +110,25 @@ export function ProfilePage() {
             </Card>
           </div>
         </div>
+      ) : !hasProfile ? (
+        <Card>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Complete Your Profile
+          </h3>
+          <p className="text-sm text-gray-500">
+            Create your profile with your date of birth to get started.
+          </p>
+
+          {saveError && (
+            <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+              {saveError}
+            </div>
+          )}
+
+          <div className="mt-6">
+            <ProfileCreateForm onSave={handleCreate} saving={saving} />
+          </div>
+        </Card>
       ) : (
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-1">
@@ -116,22 +160,9 @@ export function ProfilePage() {
                 <ProfileForm
                   key={profile.userId}
                   profile={profile}
-                  onSave={handleSave}
+                  onSave={handleUpdate}
                   saving={saving}
                 />
-              </div>
-            </Card>
-
-            <Card>
-              <h3 className="text-lg font-semibold text-gray-900">
-                Change Password
-              </h3>
-              <p className="text-sm text-gray-500">
-                Update your account password.
-              </p>
-
-              <div className="mt-6">
-                <ChangePasswordForm />
               </div>
             </Card>
           </div>

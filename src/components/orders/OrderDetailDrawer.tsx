@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { AdminOrderResponse } from '../../types/orders'
 import { OrderStatus } from '../../types/orders'
-import { mockOrdersService } from '../../services/orders.mock'
+import { ordersService } from '../../services/orders.service'
 import type { OrderAction } from '../../hooks/useOrderActions'
 import { formatCurrency, formatDateTime } from '../../utils/format'
 import { Modal } from '../shared/Modal'
@@ -49,7 +49,7 @@ function DrawerBody({ orderId, onAction, runningAction }: DrawerBodyProps) {
 
   useEffect(() => {
     let cancelled = false
-    mockOrdersService
+    ordersService
       .getById(orderId)
       .then((o) => {
         if (!cancelled) setOrder(o)
@@ -87,7 +87,16 @@ function DrawerBody({ orderId, onAction, runningAction }: DrawerBodyProps) {
 
   async function handleAction(action: OrderAction) {
     if (!onAction) return
+    if (
+      (action === 'cancel' && !pending) ||
+      (action === 'confirm' && !pending) ||
+      (action === 'complete' && !confirmed)
+    ) {
+      return
+    }
     await onAction(currentOrderId, action)
+    const updated = await ordersService.getById(currentOrderId)
+    setOrder(updated)
   }
 
   return (

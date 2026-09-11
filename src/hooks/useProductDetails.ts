@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { ProductResponse } from '../types/products'
-import { mockCatalogService } from '../services/catalog.mock'
+import { catalogService } from '../services/catalog.service'
 
 export function useProductDetails(productId: string) {
   const [product, setProduct] = useState<ProductResponse | null>(null)
@@ -11,7 +11,7 @@ export function useProductDetails(productId: string) {
     setError(null)
     setLoading(true)
     try {
-      const data = await mockCatalogService.getDetails(productId)
+      const data = await catalogService.getDetails(productId)
       setProduct(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load product')

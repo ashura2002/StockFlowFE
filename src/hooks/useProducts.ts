@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { SupplierResponse } from '../types/suppliers'
 import type { CategoryResponse } from '../types/categories'
-import type { MockProductRow } from '../services/products.mock'
-import { mockProductsService } from '../services/products.mock'
-import { mockCategoriesService } from '../services/categories.mock'
-import { mockSuppliersService } from '../services/suppliers.mock'
+import type { ProductRow } from '../types/products'
+import { productsService } from '../services/products.service'
+import { categoriesService } from '../services/categories.service'
+import { suppliersService } from '../services/suppliers.service'
 
 const PAGE_SIZE = 10
 
 export function useProducts() {
-  const [products, setProducts] = useState<MockProductRow[]>([])
+  const [products, setProducts] = useState<ProductRow[]>([])
   const [categories, setCategories] = useState<CategoryResponse[]>([])
   const [suppliers, setSuppliers] = useState<SupplierResponse[]>([])
   const [loading, setLoading] = useState(true)
@@ -20,12 +20,22 @@ export function useProducts() {
   const refresh = useCallback(async () => {
     setError(null)
     try {
-      const [prods, cats, sups] = await Promise.all([
-        mockProductsService.getAll(),
-        mockCategoriesService.getAll(),
-        mockSuppliersService.getAll(),
+      const [rawProducts, cats, sups] = await Promise.all([
+        productsService.getAll(),
+        categoriesService.getAll(),
+        suppliersService.getAll(),
       ])
-      setProducts(prods)
+
+      const catMap = new Map(cats.map((c) => [c.categoryName?.toLowerCase() ?? '', c.categoryId]))
+      const supMap = new Map(sups.map((s) => [s.supplierName?.toLowerCase() ?? '', s.supplierId]))
+
+      const rows: ProductRow[] = rawProducts.map((p) => ({
+        ...p,
+        categoryId: catMap.get(p.category?.toLowerCase() ?? '') ?? '',
+        supplierId: supMap.get(p.supplier?.toLowerCase() ?? '') ?? '',
+      }))
+
+      setProducts(rows)
       setCategories(cats)
       setSuppliers(sups)
     } catch (err) {

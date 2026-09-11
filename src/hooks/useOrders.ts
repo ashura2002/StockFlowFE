@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { AdminOrderResponse, OrderStatus } from '../types/orders'
-import { mockOrdersService, orderCounts } from '../services/orders.mock'
+import { ordersService } from '../services/orders.service'
+import { orderCounts } from '../utils/orderCounts'
 
 export type OrderTab = 'all' | OrderStatus
 
@@ -17,7 +18,7 @@ export function useOrders() {
   const refresh = useCallback(async () => {
     setError(null)
     try {
-      const data = await mockOrdersService.getAll()
+      const data = await ordersService.getAll()
       setOrders(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load orders')

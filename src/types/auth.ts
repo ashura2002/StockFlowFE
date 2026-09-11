@@ -11,6 +11,7 @@ export interface User {
   name: string
   role: Role
   createdAt: string
+  profilePictureUrl: string | null
 }
 
 export interface LoginPayload {

@@ -10,6 +10,11 @@ export interface ProductResponse {
   productImagePublicId: string | null
 }
 
+export interface ProductRow extends ProductResponse {
+  categoryId: string
+  supplierId: string
+}
+
 export interface CreateProductRequest {
   productName: string
   price: number

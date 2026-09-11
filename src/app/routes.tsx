@@ -16,6 +16,9 @@ import { OrdersPage } from '../pages/Orders/OrdersPage'
 import { UsersPage } from '../pages/Users/UsersPage'
 import { ProfilePage } from '../pages/Profile/ProfilePage'
 import { NotificationsPage } from '../pages/Notifications/NotificationsPage'
+import { AccountSettingsPage } from '../pages/Settings/AccountSettingsPage'
+import { ChangePasswordPage } from '../pages/Settings/ChangePasswordPage'
+import { DeleteAccountPage } from '../pages/Settings/DeleteAccountPage'
 import { ShopLayout } from '../components/shop/ShopLayout'
 import { ShopCatalogPage } from '../pages/Shop/ShopCatalogPage'
 import { ShopProductDetailPage } from '../pages/Shop/ShopProductDetailPage'
@@ -57,7 +60,11 @@ export function AppRoutes() {
             <Route path="suppliers" element={<SuppliersPage />} />
             <Route path="orders" element={<OrdersPage />} />
             <Route path="users" element={<UsersPage />} />
-            <Route path="profile" element={<ProfilePage />} />
+            <Route path="settings/profile" element={<ProfilePage />} />
+            <Route path="settings/account" element={<AccountSettingsPage />} />
+            <Route path="settings/account/password" element={<ChangePasswordPage />} />
+            <Route path="settings/account/delete" element={<DeleteAccountPage />} />
+            <Route path="profile" element={<Navigate to="/admin/settings/profile" replace />} />
             <Route path="notifications" element={<NotificationsPage />} />
           </Route>
         </Route>
@@ -70,7 +77,11 @@ export function AppRoutes() {
             <Route path="my-orders" element={<ShopMyOrdersPage />} />
             <Route path="my-orders/:orderId" element={<ShopOrderDetailPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
-            <Route path="profile" element={<ShopProfilePage />} />
+            <Route path="settings/profile" element={<ShopProfilePage />} />
+            <Route path="settings/account" element={<AccountSettingsPage />} />
+            <Route path="settings/account/password" element={<ChangePasswordPage />} />
+            <Route path="settings/account/delete" element={<DeleteAccountPage />} />
+            <Route path="profile" element={<Navigate to="/shop/settings/profile" replace />} />
           </Route>
         </Route>
       </Route>
@@ -80,7 +91,3 @@ export function AppRoutes() {
     </Routes>
   )
 }
-
-
-// forgot and forget password
-// recover account  

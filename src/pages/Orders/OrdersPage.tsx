@@ -144,6 +144,10 @@ export function OrdersPage() {
 
   async function handleCancelConfirm() {
     if (!cancelTarget) return
+    if (cancelTarget.status !== OrderStatusConst.Pending) {
+      setCancelTarget(null)
+      return
+    }
     setActionError(null)
     try {
       await confirm(cancelTarget.orderId, 'cancel')

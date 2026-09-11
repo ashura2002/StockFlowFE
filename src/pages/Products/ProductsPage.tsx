@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { PageContainer } from '../../components/layout/PageContainer'
 import { useProducts } from '../../hooks/useProducts'
 import { useProductMutations } from '../../hooks/useProductMutations'
-import type { MockProductRow } from '../../services/products.mock'
+import type { ProductRow } from '../../types/products'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { IconButton } from '../../components/ui/IconButton'
@@ -14,7 +14,7 @@ import { ProductForm } from '../../components/products/ProductForm'
 import { ProductDetailDrawer } from '../../components/products/ProductDetailDrawer'
 import { DeleteConfirmDialog } from '../../components/shared/DeleteConfirmDialog'
 
-type FormMode = { type: 'closed' } | { type: 'create' } | { type: 'edit'; product: MockProductRow }
+type FormMode = { type: 'closed' } | { type: 'create' } | { type: 'edit'; product: ProductRow }
 
 export function ProductsPage() {
   const {
@@ -32,13 +32,14 @@ export function ProductsPage() {
     refresh,
   } = useProducts()
 
-  const { create, update, remove, saving } = useProductMutations(refresh)
+  const { create, update, remove, uploadImage, saving, uploading } = useProductMutations(refresh)
 
   const [formMode, setFormMode] = useState<FormMode>({ type: 'closed' })
-  const [deleteTarget, setDeleteTarget] = useState<MockProductRow | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<ProductRow | null>(null)
   const [detailId, setDetailId] = useState<string | null>(null)
+  const [pendingImageFile, setPendingImageFile] = useState<File | null>(null)
 
-  const columns: Column<MockProductRow>[] = useMemo(
+  const columns: Column<ProductRow>[] = useMemo(
     () => [
       { key: 'productName', header: 'Product', render: (row) => (
         <div className="flex items-center gap-3">
@@ -95,16 +96,29 @@ export function ProductsPage() {
   )
 
   async function handleFormSubmit(data: Record<string, unknown>) {
+    let productId: string | null = null
     if (formMode.type === 'create') {
-      await create(data as Omit<MockProductRow, 'productId'>)
+      productId = await create({
+        productName: data.productName as string,
+        price: data.price as number,
+        stock: data.stock as number,
+        categoryId: data.categoryId as string,
+        supplierId: data.supplierId as string,
+        productDescriptions: (data.productDescriptions as string | null) ?? null,
+      })
     } else if (formMode.type === 'edit' && formMode.product) {
-      await update(formMode.product.productId, {
+      productId = formMode.product.productId
+      await update(productId, {
         productName: data.productName as string,
         price: data.price as number,
         stock: data.stock as number,
         productDescriptions: (data.productDescriptions as string) || null,
       })
     }
+    if (productId && pendingImageFile) {
+      await uploadImage(productId, pendingImageFile)
+    }
+    setPendingImageFile(null)
     setFormMode({ type: 'closed' })
   }
 
@@ -191,12 +205,17 @@ export function ProductsPage() {
 
       <ProductForm
         open={formMode.type !== 'closed'}
-        onClose={() => setFormMode({ type: 'closed' })}
+        onClose={() => {
+          setPendingImageFile(null)
+          setFormMode({ type: 'closed' })
+        }}
         onSubmit={handleFormSubmit}
+        onImageSelected={setPendingImageFile}
         product={formMode.type === 'edit' ? formMode.product : undefined}
         categories={categories}
         suppliers={suppliers}
         saving={saving}
+        uploading={uploading}
       />
 
       <DeleteConfirmDialog

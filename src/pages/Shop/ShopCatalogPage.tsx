@@ -188,10 +188,20 @@ function ProductCard({
       <button
         type="button"
         onClick={onView}
-        className="flex h-36 w-full items-center justify-center bg-gray-100 text-4xl font-bold text-gray-300"
+        className="flex h-36 w-full items-center justify-center bg-gray-100 overflow-hidden"
         aria-label={`View ${product.productName ?? 'product'}`}
       >
-        {product.productName?.charAt(0).toUpperCase() ?? 'P'}
+        {product.productImageUrl ? (
+          <img
+            src={product.productImageUrl}
+            alt={product.productName ?? 'Product'}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <span className="text-4xl font-bold text-gray-300">
+            {product.productName?.charAt(0).toUpperCase() ?? 'P'}
+          </span>
+        )}
       </button>
 
       <div className="flex flex-1 flex-col p-4">

@@ -4,19 +4,19 @@ import type { PaginationParams } from '../types/pagination'
 
 export const usersService = {
   async getActive(params?: PaginationParams): Promise<UserResponse[]> {
-    const { data } = await api.get<UserResponse[]>('/api/Users/active', {
+    const { data } = await api.get<UserResponse[]>('/Users/active', {
       params: params ?? {},
     })
     return data
   },
 
   async getDeleted(): Promise<UserResponse[]> {
-    const { data } = await api.get<UserResponse[]>('/api/Users/deleted')
+    const { data } = await api.get<UserResponse[]>('/Users/deleted')
     return data
   },
 
   async getById(userId: string): Promise<UserResponse> {
-    const { data } = await api.get<UserResponse>(`/api/Users/${userId}`)
+    const { data } = await api.get<UserResponse>(`/Users/${userId}`)
     return data
   },
 
@@ -24,9 +24,13 @@ export const usersService = {
     Email: string,
     params?: PaginationParams,
   ): Promise<UserResponse> {
-    const { data } = await api.get<UserResponse>('/api/Users/search', {
+    const { data } = await api.get<UserResponse>('/Users/search', {
       params: { Email, ...(params ?? {}) },
     })
     return data
+  },
+
+  async deleteMyAccount(): Promise<void> {
+    await api.delete('/Users/me')
   },
 }

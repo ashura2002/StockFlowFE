@@ -1,8 +1,17 @@
 import api from './api'
-import type { UpdateProfileRequest, UploadedImage } from '../types/profiles'
+import type {
+  CreateProfileRequest,
+  UpdateProfileRequest,
+  UploadedImage,
+} from '../types/profiles'
 import type { UserWithProfileResponse } from '../types/users'
 
 export const profilesService = {
+  async create(data: CreateProfileRequest): Promise<string> {
+    const { data: profileId } = await api.post<string>('/Profiles', data)
+    return profileId
+  },
+
   async getMyProfile(): Promise<UserWithProfileResponse> {
     const { data } = await api.get<UserWithProfileResponse>(
       '/Profiles/my-profile',

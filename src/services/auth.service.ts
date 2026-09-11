@@ -42,6 +42,7 @@ export const authService = {
         name: displayName,
         role: decodeJwtRole(accessToken) ?? Role.Admin,
         createdAt: new Date().toISOString(),
+        profilePictureUrl: profile.profilePictureUrl ?? null,
       },
     }
   },

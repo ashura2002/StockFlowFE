@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
+import { useNotifications } from '../../context/NotificationContext'
 import { IconButton } from '../ui/IconButton'
 import {
   BellIcon,
@@ -19,6 +20,7 @@ interface AppHeaderProps {
 export function AppHeader({ onMenuClick, variant = 'admin' }: AppHeaderProps) {
   const { user, logout } = useAuth()
   const { count } = useCart()
+  const { unreadCount } = useNotifications()
   const navigate = useNavigate()
   const [userMenuOpen, setUserMenuOpen] = useState(false)
 
@@ -36,36 +38,57 @@ export function AppHeader({ onMenuClick, variant = 'admin' }: AppHeaderProps) {
 
   return (
     <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-3 border-b border-gray-200 bg-white px-4 sm:px-6">
-      <IconButton label="Toggle sidebar" onClick={onMenuClick}>
+      <IconButton label="Toggle sidebar" onClick={onMenuClick} className="lg:hidden">
         <MenuIcon />
       </IconButton>
 
       <div className="flex-1" />
 
       {variant === 'shop' ? (
-        <button
-          type="button"
-          onClick={() => navigate('/shop/cart')}
-          aria-label="Cart"
-          title="Cart"
-          className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-        >
-          <ShoppingCartIcon />
-          {count > 0 && (
-            <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1 text-xs font-semibold text-white">
-              {count}
-            </span>
-          )}
-        </button>
+        <>
+          <button
+            type="button"
+            onClick={() => navigate('/shop/notifications')}
+            aria-label="Notifications"
+            title="Notifications"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          >
+            <BellIcon />
+            {unreadCount > 0 && (
+              <span className="absolute right-2 top-2 flex h-2.5 w-2.5" aria-hidden="true">
+                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+              </span>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/shop/cart')}
+            aria-label="Cart"
+            title="Cart"
+            className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          >
+            <ShoppingCartIcon />
+            {count > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1 text-xs font-semibold text-white">
+                {count}
+              </span>
+            )}
+          </button>
+        </>
       ) : (
         <button
           type="button"
           onClick={() => navigate('/admin/notifications')}
           aria-label="Notifications"
           title="Notifications"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          className="relative inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
         >
           <BellIcon />
+          {unreadCount > 0 && (
+            <span className="absolute right-2 top-2 flex h-2.5 w-2.5" aria-hidden="true">
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+            </span>
+          )}
         </button>
       )}
 
@@ -75,9 +98,17 @@ export function AppHeader({ onMenuClick, variant = 'admin' }: AppHeaderProps) {
           onClick={() => setUserMenuOpen((open) => !open)}
           className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-gray-100"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-600 text-sm font-semibold text-white">
-            {initials}
-          </span>
+          {user?.profilePictureUrl ? (
+            <img
+              src={user.profilePictureUrl}
+              alt={`${user.name ?? 'User'} profile picture`}
+              className="h-9 w-9 rounded-full object-cover"
+            />
+          ) : (
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-600 text-sm font-semibold text-white">
+              {initials}
+            </span>
+          )}
           <span className="hidden text-sm font-medium text-gray-700 sm:block">
             {user?.name ?? 'User'}
           </span>
