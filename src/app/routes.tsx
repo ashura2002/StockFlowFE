@@ -8,6 +8,7 @@ import { ForgotPasswordPage } from '../pages/Auth/ForgotPasswordPage'
 import { ResetPasswordPage } from '../pages/Auth/ResetPasswordPage'
 import { RegisterPage } from '../pages/Auth/RegisterPage'
 import { UnauthorizedPage } from '../pages/UnauthorizedPage'
+import { LandingPage } from '../pages/Landing/LandingPage'
 import { DashboardPage } from '../pages/Dashboard/DashboardPage'
 import { ProductsPage } from '../pages/Products/ProductsPage'
 import { CategoriesPage } from '../pages/Categories/CategoriesPage'
@@ -86,7 +87,7 @@ export function AppRoutes() {
         </Route>
       </Route>
 
-      <Route path="/" element={<HomeRedirect />} />
+      <Route path="/" element={<LandingPage />} />
       <Route path="*" element={<HomeRedirect />} />
     </Routes>
   )
