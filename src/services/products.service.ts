@@ -48,7 +48,7 @@ export const productsService = {
   ): Promise<UploadedImage> {
     const formData = new FormData()
     formData.append('file', file)
-    const { data } = await api.patch<UploadedImage>(
+    const { data } = await api.put<UploadedImage>(
       `/Products/${productId}/product-image`,
       formData,
       { headers: { 'Content-Type': 'multipart/form-data' } },
